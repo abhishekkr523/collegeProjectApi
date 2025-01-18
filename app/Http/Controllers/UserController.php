@@ -102,6 +102,7 @@ return "user dashboard";
         ]);
 
         $role = Role::find($request->role_id);
+       dd($role);
         $user->roles()->syncWithoutDetaching([$role->id]);
 
         return response()->json(['message' => 'Role assigned successfully']);
