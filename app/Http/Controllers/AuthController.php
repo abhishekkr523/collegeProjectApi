@@ -11,41 +11,87 @@ use App\Models\Role;
 class AuthController extends Controller
 {
 
+    // public function register(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'password' => 'required|string|min:8',
+    //     ]);
+
+    //     // Check if this is the first user
+    //     $isFirstUser = User::count() === 0;
+
+    //     // Create the user
+    //     $user = User::create([
+    //         'id' => \Illuminate\Support\Str::uuid(),
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //     ]);
+
+    //     // Assign roles
+    //     if ($isFirstUser) {
+    //         // Assign admin role to the first user
+    //         $adminRole = Role::where('name', 'admin')->firstOrFail();
+    //         $user->roles()->attach($adminRole->id);
+    //     } else {
+    //         // Assign default user role
+    //         $defaultRole = Role::where('name', 'user')->firstOrFail();
+    //         $user->roles()->attach($defaultRole->id);
+    //     }
+
+    //     return response()->json([
+    //         'message' => $isFirstUser ? 'Admin registered successfully.' : 'User registered successfully.',
+    //         'user' => $user,
+    //     ]);
+    // }
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8',
+    ]);
 
-        // Check if this is the first user
-        $isFirstUser = User::count() === 0;
+    // Check if this is the first user
+    $isFirstUser = User::count() === 0;
 
-        // Create the user
-        $user = User::create([
-            'id' => \Illuminate\Support\Str::uuid(),
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    // Create the user
+    $user = User::create([
+        'id' => \Illuminate\Support\Str::uuid(),
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        // Assign roles
-        if ($isFirstUser) {
-            // Assign admin role to the first user
-            $adminRole = Role::where('name', 'admin')->firstOrFail();
-            $user->roles()->attach($adminRole->id);
-        } else {
-            // Assign default user role
-            $defaultRole = Role::where('name', 'user')->firstOrFail();
-            $user->roles()->attach($defaultRole->id);
-        }
-
-        return response()->json([
-            'message' => $isFirstUser ? 'Admin registered successfully.' : 'User registered successfully.',
-            'user' => $user,
-        ]);
+    // Assign roles
+    if ($isFirstUser) {
+        // Assign admin role to the first user
+        $adminRole = Role::where('name', 'admin')->firstOrFail();
+        $user->roles()->attach($adminRole->id);
+    } else {
+        // Assign default user role
+        $defaultRole = Role::where('name', 'user')->firstOrFail();
+        $user->roles()->attach($defaultRole->id);
     }
+
+    // Create a Sanctum token
+    $roles = $user->roles->pluck('name')->toArray(); // Get user roles
+    $token = $user->createToken('auth_token', $roles)->plainTextToken;
+
+    return response()->json([
+        'message' => $isFirstUser ? 'Admin registered successfully.' : 'User registered successfully.',
+        'token' => $token,  // Return the token after registration
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'roles' => $roles,
+        ],
+    ]);
+}
+
 
     public function login(Request $request)
     {

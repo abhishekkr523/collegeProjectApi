@@ -19,8 +19,7 @@ class User extends Authenticatable
     public $incrementing = false; // Disable auto-incrementing for the primary key
 
     protected $fillable = [
-        'name', 'email', 'password', 'department', 'branch', 
-        'rollnumber', 'subject', 'semester', 'session_start', 'session_end','role',
+        'name', 'email', 'password',
     ];
 
     /**
