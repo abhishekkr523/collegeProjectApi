@@ -13,7 +13,7 @@ class CreateBooksTable extends Migration
             $table->string('title'); // title of the book
             $table->string('author'); // author of the book
             $table->string('publisher')->nullable(); // publisher of the book
-            $table->year('publication_year'); // publication year of the book
+            $table->integer('publication_year'); // publication year of the book
             $table->string('isbn')->unique(); // ISBN of the book (unique)
             $table->integer('number_of_pages')->nullable(); // number of pages in the book
             $table->enum('status', ['available', 'borrowed', 'reserved'])->default('available'); // current status of the book

@@ -29,28 +29,15 @@ return "user dashboard";
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'department' => 'nullable|string',
-            'branch' => 'nullable|string',
-            'rollnumber' => 'nullable|string',
-            'subject' => 'nullable|string',
-            'semester' => 'nullable|string',
-            'session_start' => 'nullable|string',
-            'session_end' => 'nullable|string',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'department' => $request->department,
-            'branch' => $request->branch,
-            'rollnumber' => $request->rollnumber,
-            'subject' => $request->subject,
-            'semester' => $request->semester,
-            'session_start' => $request->session_start,
-            'session_end' => $request->session_end,
+           
         ]);
-
+// dd($user);
         return response()->json($user, 201);
     }
 
