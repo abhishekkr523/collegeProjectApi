@@ -94,5 +94,17 @@ return "user dashboard";
 
         return response()->json(['message' => 'Role assigned successfully']);
     }
+
+    public function getUsersByRole($roleId)
+    {
+        // Find the role by ID
+        $role = Role::with('users')->find($roleId);
+
+        if (!$role) {
+            return response()->json(['message' => 'Role not found'], 404);
+        }
+
+        return response()->json($role->users, 200);
+    }
 }
 
