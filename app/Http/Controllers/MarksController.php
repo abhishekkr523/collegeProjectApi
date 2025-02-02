@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Marks\MarksRequest;
+use App\Http\Resources\Marks\MarksResource;
 use App\Models\Mark;
 use App\Models\Student;
 use App\Models\Year;
@@ -16,28 +18,16 @@ class MarksController extends Controller
      */
     public function index()
     {
-        
         // Fetch all marks with related student, year, and semester
         $marks = Mark::with(['student', 'year', 'semester'])->get();
-
-        return response()->json($marks);
+        return MarksResource::collection($marks);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MarksRequest $request)
     {
-        // Validate request data
-        $request->validate([
-            'subject' => 'required|string|max:255',
-            'total_marks' => 'required|integer',
-            'midterm_marks' => 'required|integer',
-            'assignment_marks' => 'required|integer',
-            'student_id' => 'required|exists:students,id',
-            'year_id' => 'required|exists:years,id',
-            'sem_id' => 'required|exists:semesters,id',
-        ]);
 
         // Create the mark entry
         $mark = Mark::create([
@@ -66,13 +56,13 @@ class MarksController extends Controller
             return response()->json(['message' => 'Mark not found'], 404);
         }
 
-        return response()->json($mark);
+        return new MarksResource($mark);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(MarksRequest $request, string $id)
     {
         // Find the mark to update
         $mark = Mark::find($id);
@@ -81,21 +71,10 @@ class MarksController extends Controller
             return response()->json(['message' => 'Mark not found'], 404);
         }
 
-        // Validate request data
-        $request->validate([
-            'subject' => 'string|max:255',
-            'total_marks' => 'integer',
-            'midterm_marks' => 'integer',
-            'assignment_marks' => 'integer',
-            'student_id' => 'exists:students,id',
-            'year_id' => 'exists:years,id',
-            'sem_id' => 'exists:semesters,id',
-        ]);
-
         // Update the mark entry
         $mark->update($request->all());
 
-        return response()->json($mark);
+        return response()->json(['success'=>true,'message' => 'Marks create successfully', 'data' => $mark], 200);
     }
 
     /**
