@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HodController;
+use App\Http\Controllers\MarksController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 
 // Public routes
@@ -42,8 +44,16 @@ Route::get('users', [UserController::class, 'index']);
 Route::post('users', [UserController::class, 'store']); // Add new user
 Route::put('users/{user}', [UserController::class, 'update']); // Update user
 Route::delete('users/{user}', [UserController::class, 'destroy']); // Delete user
+     
+Route::get('student', [StudentController::class, 'index']);
+Route::post('student', [StudentController::class, 'store']); 
+Route::post('student/{id}', [StudentController::class, 'update']); 
+Route::delete('student/{id}', [StudentController::class, 'destroy']); 
+
+Route::get('marks', [MarksController::class, 'index']);
+Route::get('marks/{id}', [MarksController::class, 'show']);
+Route::post('marks', [MarksController::class, 'store']); 
+Route::post('marks/{id}', [MarksController::class, 'update']); 
+Route::delete('marks/{id}', [MarksController::class, 'destroy']); 
      // Assign role to user
-
-
-
-     Route::post('/assign-role', [AuthController::class, 'assignRole']);
+ Route::post('/assign-role', [AuthController::class, 'assignRole']);
