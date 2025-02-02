@@ -18,7 +18,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 // Admin routes
 Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
-    Route::post('/assign-role', [AuthController::class, 'assignRole']);
+    // Route::post('/assign-role', [AuthController::class, 'assignRole']);
 });
 
 // HOD routes (accessible by hod and librarian)
@@ -55,3 +55,5 @@ Route::get('marks/{id}', [MarksController::class, 'show']);
 Route::post('marks', [MarksController::class, 'store']); 
 Route::post('marks/{id}', [MarksController::class, 'update']); 
 Route::delete('marks/{id}', [MarksController::class, 'destroy']); 
+     // Assign role to user
+ Route::post('/assign-role', [AuthController::class, 'assignRole']);
