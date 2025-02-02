@@ -49,6 +49,7 @@ Route::get('student', [StudentController::class, 'index']);
 Route::post('student', [StudentController::class, 'store']); 
 Route::post('student/{id}', [StudentController::class, 'update']); 
 Route::delete('student/{id}', [StudentController::class, 'destroy']); 
+Route::get('roles/{roleId}/users', [UserController::class, 'getUsersByRole']);
 
 Route::get('marks', [MarksController::class, 'index']);
 Route::get('marks/{id}', [MarksController::class, 'show']);
