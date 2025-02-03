@@ -16,10 +16,26 @@ class MarksController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all marks with related student, year, and semester
-        $marks = Mark::with(['student', 'year', 'semester'])->get();
+        $query = Mark::with(['student', 'year', 'semester']);
+
+        // Check if a search query is provided
+        if ($request->has('search') && !empty($request->search)) {
+            $query->whereHas('student', function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('roll_no', 'LIKE', '%' . $request->search . '%');;
+                
+            });
+        }
+    
+        $marks = $query->get();
+        if ($marks->isEmpty()) {
+            return response()->json([
+                'message' => 'No matching student found.',
+                'status' => false
+            ], 200);
+        }
         return MarksResource::collection($marks);
     }
 

@@ -39,7 +39,7 @@ class StudentController extends Controller
         // Create a new student
         $student = Student::create($request->all());
 
-        return response()->json(['message' => 'Student created successfully', 'student' => $student], 201);
+        return response()->json(['message' => 'Student created successfully', 'student' => $student], 200);
     }
 
     /**
