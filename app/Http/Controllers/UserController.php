@@ -13,11 +13,26 @@ class UserController extends Controller
 return "user dashboard";
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all users from the database
-        $users = User::all();
-        
+        $search = $request->input('search');
+        $roleId = $request->input('role_id'); // Get role ID from request
+
+        $users = User::when($search, function ($query, $search) {
+                return $query->where('name', 'LIKE', "%{$search}%");
+            })
+            ->when($roleId, function ($query, $roleId) {
+                return $query->whereHas('roles', function ($q) use ($roleId) {
+                    $q->where('id', $roleId);
+                });
+            })
+            ->get();
+        if ($users->isEmpty()) {
+            return response()->json([
+                'message' => 'No matching user found.',
+                'status' => false
+            ], 200);
+        }
         // Return users as JSON (for API) or view (for web routes)
         return response()->json($users);
     }

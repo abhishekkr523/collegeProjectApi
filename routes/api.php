@@ -8,6 +8,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\MarksController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 
@@ -56,5 +57,8 @@ Route::get('marks/{id}', [MarksController::class, 'show']);
 Route::post('marks', [MarksController::class, 'store']); 
 Route::post('marks/{id}', [MarksController::class, 'update']); 
 Route::delete('marks/{id}', [MarksController::class, 'destroy']); 
+Route::post('marks/import', [MarksController::class, 'import'])->name('import');
      // Assign role to user
  Route::post('/assign-role', [AuthController::class, 'assignRole']);
+
+ Route::get('role', [RoleController::class, 'index']);
