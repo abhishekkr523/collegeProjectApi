@@ -111,5 +111,6 @@ class BookController extends Controller
         // Return a success message
         return response()->json(['message' => 'Book deleted successfully']);
     }
+    
 }
 

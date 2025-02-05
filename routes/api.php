@@ -1,12 +1,15 @@
 <?php
 
+use App\Exports\BooksExport;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\MarksController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\StudentController;
@@ -39,12 +42,15 @@ Route::get('books/{id}', [BookController::class, 'show']);
 Route::post('books', [BookController::class, 'store']);
 Route::put('books/{id}', [BookController::class, 'update']);
 Route::delete('books/{id}', [BookController::class, 'destroy']);
-
+Route::get('/export-books', function () {
+    return Excel::download(new BooksExport, 'books.xlsx');
+});
 
 Route::get('users', [UserController::class, 'index']);
 Route::post('users', [UserController::class, 'store']); // Add new user
 Route::put('users/{user}', [UserController::class, 'update']); // Update user
 Route::delete('users/{user}', [UserController::class, 'destroy']); // Delete user
+Route::get('/export-users', [UserController::class, 'export']);
 
 Route::get('student', [StudentController::class, 'index']);
 Route::post('student', [StudentController::class, 'store']);
@@ -65,3 +71,13 @@ Route::get('/notices', [NoticeController::class, 'index']);
 Route::post('/notices', [NoticeController::class, 'store']);
 Route::get('/notices/{id}/download', [NoticeController::class, 'download']);
 Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+Route::get('/download/{filename}', function ($filename) {
+    $path = storage_path("app/public/notices/" . $filename);
+
+    if (!file_exists($path)) {
+        return response()->json(["error" => "File not found"], 404);
+    }
+
+    return Response::download($path);
+});
+Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
