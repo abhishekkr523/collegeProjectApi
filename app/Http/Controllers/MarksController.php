@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Marks\MarksRequest;
 use App\Http\Resources\Marks\MarksResource;
+use App\Imports\MarksImport;
 use App\Models\Mark;
 use App\Models\Student;
 use App\Models\Year;
 use App\Models\Semester;
 use Illuminate\Support\Str; 
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MarksController extends Controller
 {
@@ -38,13 +40,11 @@ class MarksController extends Controller
         }
         return MarksResource::collection($marks);
     }
-
     /**
      * Store a newly created resource in storage.
      */
     public function store(MarksRequest $request)
     {
-
         // Create the mark entry
         $mark = Mark::create([
             'id'=> Str::uuid(),
@@ -59,7 +59,6 @@ class MarksController extends Controller
 
         return response()->json(['message' => 'Marks create successfully', 'student' => $mark], 200);
     }
-
     /**
      * Display the specified resource.
      */
@@ -73,6 +72,20 @@ class MarksController extends Controller
         }
 
         return new MarksResource($mark);
+    }
+    public function import(Request $request)
+    {
+        
+        // Validate the file upload. You can adjust the validation rules as needed.
+        // $request->validate([
+        //     'mark' => 'required|file|mimes:csv,txt'
+        // ]);
+        // Import the CSV file using the MarksImport class.
+        // Excel::import(new MarksImport, $request->file('mark'));
+        Excel::import(new MarksImport, $request->mark);
+
+        // Redirect back with a success message.
+        return response()->json(['success' => 'Marks imported successfully.'], 200);
     }
 
     /**
@@ -110,4 +123,5 @@ class MarksController extends Controller
 
         return response()->json(['message' => 'Mark deleted successfully']);
     }
+   
 }
