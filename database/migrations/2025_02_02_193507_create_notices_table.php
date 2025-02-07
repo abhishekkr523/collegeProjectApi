@@ -8,11 +8,11 @@ return new class extends Migration {
     {
         Schema::create('notices', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('description');
-            $table->string('category'); // New field for category
-            $table->string('author'); // New field for author
-            $table->date('notice_date'); // New field for date
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
+            $table->string('category')->nullable(); // New field for category
+            $table->string('author')->nullable(); // New field for author
+            $table->date('notice_date')->nullable(); // New field for date
             $table->string('file')->nullable(); // For PDF file
             $table->timestamps();
         });
