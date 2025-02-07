@@ -19,7 +19,8 @@ return "user dashboard";
         $roleId = $request->input('role_id'); // Get role ID from request
 
         $users = User::when($search, function ($query, $search) {
-                return $query->where('name', 'LIKE', "%{$search}%");
+                return $query->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%");
             })
             ->when($roleId, function ($query, $roleId) {
                 return $query->whereHas('roles', function ($q) use ($roleId) {
