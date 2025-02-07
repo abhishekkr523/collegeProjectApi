@@ -75,18 +75,36 @@ class MarksController extends Controller
     }
     public function import(Request $request)
     {
-        
-        // Validate the file upload. You can adjust the validation rules as needed.
-        // $request->validate([
-        //     'mark' => 'required|file|mimes:csv,txt'
-        // ]);
-        // Import the CSV file using the MarksImport class.
-        // Excel::import(new MarksImport, $request->file('mark'));
-        Excel::import(new MarksImport, $request->mark);
+        // Validate the file
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:xlsx,csv|max:2048',
+        ]);
 
-        // Redirect back with a success message.
-        return response()->json(['success' => 'Marks imported successfully.'], 200);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid file format or file missing.',
+                'errors'  => $validator->errors(),
+            ], 400);
+        }
+
+        try {
+            // Process the file
+            Excel::import(new MarksImport, $request->file('file'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Marks imported successfully!',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error importing marks.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Update the specified resource in storage.

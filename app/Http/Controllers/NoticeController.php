@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Notice;
 use Illuminate\Http\Request;
+use App\Exports\NoticesExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
@@ -15,39 +17,75 @@ class NoticeController extends Controller
         return response()->json(Notice::all());
     }
 
-    public function store(Request $request)
+//     public function store(Request $request)
+// {
+//     // Validate the request
+//     $request->validate([
+//         'title' => 'required|string',
+//         'description' => 'required|string',
+//         'category' => 'required|string',
+//         'author' => 'required|string',
+//         'notice_date' => 'required|date',
+//         'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,svg,zip,rar,txt,csv|max:20480', // 20MB max
+//     ]);
+
+//     // Check if file is present
+//     if ($request->hasFile('file')) {
+//         $file = $request->file('file');
+//         $fileName = time() . '_' . $file->getClientOriginalName();
+//         $filePath = $file->storeAs('notices', $fileName, 'public'); // Save in storage/app/public/notices
+
+//         // Save the file path in the database
+//         $notice = new Notice();
+//         $notice->title = $request->title;
+//         $notice->description = $request->description;
+//         $notice->category = $request->category;
+//         $notice->author = $request->author;
+//         $notice->notice_date = $request->notice_date;
+//         $notice->file = $filePath; // Save path in database
+//         $notice->save();
+
+//         return response()->json(['message' => 'Notice created successfully', 'data' => $notice], 201);
+//     }
+
+//     return response()->json(['message' => 'File upload failed'], 400);
+// }
+public function store(Request $request)
 {
     // Validate the request
     $request->validate([
-        'title' => 'required|string',
-        'description' => 'required|string',
-        'category' => 'required|string',
-        'author' => 'required|string',
-        'notice_date' => 'required|date',
-        'file' => 'file|mimes:pdf|max:20480', // 20MB max
+        'title' => 'string',
+        'description' => 'string',
+        'category' => 'string',
+        'author' => 'string',
+        'notice_date' => 'date',
+        'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,svg,zip,rar,txt,csv|max:20480', // 20MB max
     ]);
 
-    // Check if file is present
+    // Create a new Notice instance
+    $notice = new Notice();
+    $notice->title = $request->title;
+    $notice->description = $request->description;
+    $notice->category = $request->category;
+    $notice->author = $request->author;
+    $notice->notice_date = $request->notice_date;
+
+    // Check if file is present and save it
     if ($request->hasFile('file')) {
         $file = $request->file('file');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $filePath = $file->storeAs('notices', $fileName, 'public'); // Save in storage/app/public/notices
-
-        // Save the file path in the database
-        $notice = new Notice();
-        $notice->title = $request->title;
-        $notice->description = $request->description;
-        $notice->category = $request->category;
-        $notice->author = $request->author;
-        $notice->notice_date = $request->notice_date;
-        $notice->file = $filePath; // Save path in database
-        $notice->save();
-
-        return response()->json(['message' => 'Notice created successfully', 'data' => $notice], 201);
+        $notice->file = $filePath; // Save file path in database
+    } else {
+        $notice->file = null; // Set file to null if no file is uploaded
     }
 
-    return response()->json(['message' => 'File upload failed'], 400);
+    // Save the notice
+    $notice->save();
+
+    return response()->json(['message' => 'Notice created successfully', 'data' => $notice], 201);
 }
+
 
 
     public function show($id)
@@ -85,5 +123,9 @@ class NoticeController extends Controller
     $notice->delete();
 
     return response()->json(['message' => 'Notice deleted successfully']);
+}
+public function exportNotices()
+{
+    return Excel::download(new NoticesExport, 'notices.xlsx');
 }
 }
