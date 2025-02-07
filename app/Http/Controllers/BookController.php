@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Imports\BooksImport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
@@ -111,6 +114,29 @@ class BookController extends Controller
         // Return a success message
         return response()->json(['message' => 'Book deleted successfully']);
     }
+ 
+    public function import(Request $request)
+    {
+        // Validate the uploaded file
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        // Handle the file upload
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            Excel::import(new BooksImport, $file);
+
+            return response()->json(['message' => 'Books imported successfully'], 200);
+        }
+
+        return response()->json(['message' => 'No file uploaded'], 400);
+    }
+
     
 }
 

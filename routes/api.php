@@ -46,6 +46,7 @@ Route::delete('books/{id}', [BookController::class, 'destroy']);
 Route::get('/export-books', function () {
     return Excel::download(new BooksExport, 'books.xlsx');
 });
+Route::post('/books/import', [BookController::class, 'import']);
 
 Route::get('users', [UserController::class, 'index']);
 Route::post('users', [UserController::class, 'store']); // Add new user
