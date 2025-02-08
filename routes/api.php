@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\MarksController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\YearController;
+use App\Models\CourseCategory;
+use Illuminate\Types\Relations\Role;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -61,6 +67,7 @@ Route::delete('student/{id}', [StudentController::class, 'destroy']);
 Route::get('roles/{roleId}/users', [UserController::class, 'getUsersByRole']);
 
 Route::get('marks', [MarksController::class, 'index']);
+
 Route::get('marks/{id}', [MarksController::class, 'show']);
 Route::post('marks', [MarksController::class, 'store']);
 Route::post('marks/{id}', [MarksController::class, 'update']);
@@ -74,6 +81,16 @@ Route::get('/notices', [NoticeController::class, 'index']);
 Route::post('/notices', [NoticeController::class, 'store']);
 Route::get('/notices/{id}/download', [NoticeController::class, 'download']);
 Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+
+Route::get('role', [RoleController::class, 'index']);
+Route::get('year', [YearController::class, 'index']);
+Route::get('semester', [SemesterController::class, 'index']);
+
+Route::get('course', [CourseController::class, 'index']);
+Route::post('course', [CourseController::class, 'store']);
+
+Route::get('courseCate', [CourseCategoryController::class, 'index']);
+Route::get('/courseCate/{category_id}', [CourseCategoryController::class, 'show']);
 Route::get('/download/{filename}', function ($filename) {
     $path = storage_path("app/public/notices/" . $filename);
 

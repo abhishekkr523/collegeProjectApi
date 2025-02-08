@@ -11,11 +11,39 @@ use Illuminate\Support\Facades\Validator;
 class BookController extends Controller
 {
     // Get all books (index)
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all(); // Retrieve all books
-        return response()->json($books);
+        $query = Book::query(); // Start the query builder
+    
+        if ($request->has('search1')) {
+            $query->where('title', 'LIKE', "%{$request->input('search1')}%");
+        }
+    
+        if ($request->has('search2')) {
+            $query->where('author', 'LIKE', "%{$request->input('search2')}%");
+        }
+    
+        if ($request->has('search3')) {
+            $query->where('isbn', 'LIKE', "%{$request->input('search3')}%");
+        }
+    
+        $books = $query->get(); // Execute the query
+    
+        if ($books->isEmpty()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Book is not found',
+            ], 200);
+        }
+    
+        return response()->json([
+            'status' => true,
+            'message' => 'Books retrieved successfully',
+            'data' => $books
+        ]);
     }
+    
+
 
     // Get a single book by ID
     public function show($id)

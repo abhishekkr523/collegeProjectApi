@@ -11,6 +11,7 @@ use App\Models\Year;
 use App\Models\Semester;
 use Illuminate\Support\Str; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class MarksController extends Controller
