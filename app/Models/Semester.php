@@ -19,4 +19,17 @@ class Semester extends Model
     {
         return $this->hasMany(Mark::class, 'sem_id');
     }
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_semester', 'semester_id', 'student_id');
+    }
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+      public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'semester_subject', 'semester_id', 'subject_id');
+    }
+    
 }

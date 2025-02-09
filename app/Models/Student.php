@@ -22,5 +22,13 @@ class Student extends Model
     {
         return $this->hasMany(Mark::class);
     }
+    public function semesters()
+    {
+        return $this->belongsToMany(Semester::class, 'student_semester', 'student_id', 'semester_id');
+    }
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 
 }

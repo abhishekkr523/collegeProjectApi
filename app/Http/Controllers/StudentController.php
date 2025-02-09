@@ -7,19 +7,118 @@ use App\Models\Student; // Assuming you have a `Student` model
 use Illuminate\Support\Str; 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        // Retrieve all students
-        $students = Student::all();
-        return response()->json([
-            'success' => true,
-            'message' => 'Students retrieved successfully.',
-            'students' => $students
-        ], 200);
+
+//     public function index(Request $request)
+// {
+//     // Retrieve query parameters
+//     $session = $request->query('session');
+//     $branch = $request->query('branch');
+//     $roll_no = $request->query('roll_no');
+
+//     // Query students with filters
+//     $query = Student::with(['semesters']);
+
+//     if ($session) {
+//         $query->where('session', $session);
+//     }
+
+//     if ($branch) {
+//         $query->where('branch', $branch);
+//     }
+
+//     if ($roll_no) {
+//         $query->where('roll_no', $roll_no);
+//     }
+
+//     // Fetch filtered students
+//     $students = $query->get();
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Students retrieved successfully.',
+//         'students' => $students
+//     ], 200);
+// }
+// public function index(Request $request)
+// {
+//     $query = Student::with(['semesters.subjects']);
+
+//     // Apply filters if provided
+//     if ($request->has('session')) {
+//         $query->where('session', $request->session);
+//     }
+
+//     if ($request->has('branch')) {
+//         $query->where('branch', $request->branch);
+//     }
+
+//     if ($request->has('roll_no')) {
+//         $query->where('roll_no', $request->roll_no);
+//     }
+
+//     if ($request->has('semester_id')) {
+//         $query->whereHas('semesters', function ($q) use ($request) {
+//             $q->where('semesters.id', $request->semester_id); // 👈 FIXED: Specify table name
+//         });
+//     }
+
+//     if ($request->has('subject_id')) {
+//         $query->whereHas('semesters.subjects', function ($q) use ($request) {
+//             $q->where('subjects.id', $request->subject_id); // 👈 FIXED: Specify table name
+//         });
+//     }
+
+//     $students = $query->get();
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Students retrieved successfully.',
+//         'students' => $students
+//     ], 200);
+// }
+public function index(Request $request)
+{
+    $query = Student::with(['semesters.subjects']);
+
+    // Apply filters if provided
+    if ($request->has('session')) {
+        $query->where('session', $request->session);
     }
+
+    if ($request->has('branch')) {
+        $query->where('branch', $request->branch);
+    }
+
+    if ($request->has('roll_no')) {
+        $query->where('roll_no', $request->roll_no);
+    }
+
+    if ($request->has('semester_id')) {
+        $query->whereHas('semesters', function ($q) use ($request) {
+            $q->where('semesters.id', $request->semester_id);
+        });
+    }
+
+    if ($request->has('subject_id')) {
+        $query->whereHas('semesters.subjects', function ($q) use ($request) {
+            $q->where('subjects.id', $request->subject_id);
+        });
+    }
+
+    if ($request->has('attendance_status')) {
+        $query->whereHas('attendances', function ($q) use ($request) {
+            $q->where('attendance_status', $request->attendance_status);
+        });
+    }
+
+    $students = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Students retrieved successfully.',
+        'students' => $students
+    ], 200);
+}
 
     /**
      * Store a newly created resource in storage.
