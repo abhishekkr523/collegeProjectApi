@@ -3,24 +3,26 @@
 use App\Exports\BooksExport;
 use Illuminate\Http\Request;
 
+use App\Models\CourseCategory;
+use Illuminate\Types\Relations\Role;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HodController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\CourseCategoryController;
-use App\Http\Controllers\CourseController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\YearController;
 use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\MarksController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\NoticeController;
-use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\YearController;
-use App\Models\CourseCategory;
-use Illuminate\Types\Relations\Role;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\CourseCategoryController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -86,8 +88,13 @@ Route::get('role', [RoleController::class, 'index']);
 Route::get('year', [YearController::class, 'index']);
 Route::get('semester', [SemesterController::class, 'index']);
 
-Route::get('course', [CourseController::class, 'index']);
-Route::post('course', [CourseController::class, 'store']);
+Route::prefix('courses')->group(function () {
+    Route::get('/', [CourseController::class, 'index']); // Get all courses
+    Route::post('/', [CourseController::class, 'store']); // Add a course
+    Route::get('/{id}', [CourseController::class, 'show']); // Get a single course
+    Route::put('/{id}', [CourseController::class, 'update']); // Update a course
+    Route::delete('/{id}', [CourseController::class, 'destroy']); // Delete a course
+});
 
 Route::get('courseCate', [CourseCategoryController::class, 'index']);
 Route::get('/courseCate/{category_id}', [CourseCategoryController::class, 'show']);
@@ -101,3 +108,13 @@ Route::get('/download/{filename}', function ($filename) {
     return Response::download($path);
 });
 Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
+
+Route::apiResource('attendances', AttendanceController::class);
+
+Route::prefix('subjects')->group(function () {
+    Route::get('/', [SubjectController::class, 'index']);        // Get all subjects
+    Route::post('/', [SubjectController::class, 'store']);       // Create a new subject
+    Route::get('/{id}', [SubjectController::class, 'show']);     // Get a single subject
+    Route::put('/{id}', [SubjectController::class, 'update']);   // Update a subject
+    Route::delete('/{id}', [SubjectController::class, 'destroy']);// Delete a subject
+});
