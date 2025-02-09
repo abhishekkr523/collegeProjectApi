@@ -1,6 +1,7 @@
 <?php
 
 use App\Exports\BooksExport;
+use App\Http\Controllers\Admin\IssueBookController;
 use Illuminate\Http\Request;
 
 use Maatwebsite\Excel\Facades\Excel;
@@ -101,3 +102,6 @@ Route::get('/download/{filename}', function ($filename) {
     return Response::download($path);
 });
 Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
+
+Route::get('/issue-book', [IssueBookController::class, 'index']);
+Route::post('/issue-book', [IssueBookController::class, 'addingBookIssue']);
