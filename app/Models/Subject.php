@@ -23,6 +23,14 @@ class Subject extends Model
     }
     public function semesters()
     {
-        return $this->belongsToMany(Semester::class, 'semester_subject', 'subject_id', 'semester_id');
+        return $this->belongsToMany(Semester::class, 'semester_subject', 'subject_id', 'semester_id')->withTimestamps();
+    }
+    public function AllAttendances()
+    {
+        return $this->belongsToMany(Attendance::class, 'attendance_subject');
+    }
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_subject', 'subject_id', 'student_id');
     }
 }
