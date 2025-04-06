@@ -6,11 +6,13 @@ use App\Models\Admin\IssueBook;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Student extends Model
 {
     use HasFactory;
     use HasUuids;
+    use Notifiable;
     protected $fillable = [
         'name',
         'roll_no',
@@ -18,7 +20,10 @@ class Student extends Model
         'branch',
         'session',
     ];
-
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email; // Ensure 'email' column exists in your students table
+    }
     public function marks()
     {
         return $this->hasMany(Mark::class);
@@ -37,5 +42,13 @@ class Student extends Model
     )->withTimestamps();
 }
 
+    public function semesters()
+    {
+        return $this->belongsToMany(Semester::class, 'student_semester', 'student_id', 'semester_id');
+    }
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 
 }

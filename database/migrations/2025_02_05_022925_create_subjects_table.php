@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->uuid('id')->primary(); // Primary key
-            $table->string('name'); // Subject name
-            $table->text('description')->nullable(); // Optional description
-            $table->foreignUuid('course_id')->references('id')->on('courses')->onDelete('cascade'); // Foreign key to courses table
+            $table->uuid('id')->primary();
+            $table->string('name')->unique();
+            $table->string('code')->unique();
+            $table->integer('credits');
             $table->timestamps();
         });
     }

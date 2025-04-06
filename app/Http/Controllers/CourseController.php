@@ -1,78 +1,103 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Str;
-use App\Http\Controllers\Controller;
+
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CourseController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get all courses with their categories.
      */
     public function index()
     {
-        $course= Course::all();
-        return response()->json([
-            'success' => true,
-            'message' => 'Course Category retrieved successfully.',
-            'data' => $course
-        ], 200);
+        return response()->json(Course::with('categories')->get());
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new course.
      */
     public function store(Request $request)
     {
-        // Validate the request data
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string',
             'description' => 'nullable|string',
-            'category'    => 'required|string|max:255',
-            'duration'    => 'required|integer',
-            'instructor'  => 'required|string|max:255',
-            'credits'     => 'required|integer',
-            'fee'         => 'nullable|numeric',
-            'start_date'  => 'required|date',
-            'end_date'    => 'nullable|date',
+            'duration' => 'required|integer',
+            'instructor' => 'required|string',
+            'credits' => 'integer',
+            'fee' => 'nullable|numeric',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:course_categories,id'
         ]);
 
-        // Generate a UUID for the course ID
-        $validated['id'] = Str::uuid();
+        $course = Course::create([
+            'id' => Str::uuid(),
+            'name' => $request->name,
+            'description' => $request->description,
+            'duration' => $request->duration,
+            'instructor' => $request->instructor,
+            'credits' => $request->credits ?? 3,
+            'fee' => $request->fee,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date
+        ]);
 
-        // Create the course record in the database
-        $course = Course::create($validated);
+        $course->categories()->attach($request->category_ids);
 
-        // Return a JSON response indicating success
-        return response()->json([
-            'message' => 'Course created successfully',
-            'data'    => $course
-        ], 200);
+        return response()->json(['message' => 'Course created successfully', 'course' => $course], 201);
     }
 
     /**
-     * Display the specified resource.
+     * Get a specific course with its categories.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $course = Course::with('categories')->findOrFail($id);
+        return response()->json($course);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update a course.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $course = Course::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string',
+            'description' => 'nullable|string',
+            'duration' => 'required|integer',
+            'instructor' => 'required|string',
+            'credits' => 'integer',
+            'fee' => 'nullable|numeric',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:course_categories,id'
+        ]);
+
+        $course->update($request->only([
+            'name', 'description', 'duration', 'instructor', 'credits', 'fee', 'start_date', 'end_date'
+        ]));
+
+        $course->categories()->sync($request->category_ids);
+
+        return response()->json(['message' => 'Course updated successfully', 'course' => $course]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a course.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $course = Course::findOrFail($id);
+        $course->categories()->detach(); // Remove relationships first
+        $course->delete();
+
+        return response()->json(['message' => 'Course deleted successfully']);
     }
 }
