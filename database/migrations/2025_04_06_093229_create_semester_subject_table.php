@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendances', function (Blueprint $table) {
+        Schema::create('semester_subject', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignUuid('semester_id')->constrained('semesters')->onDelete('cascade');
             $table->foreignUuid('subject_id')->constrained('subjects')->onDelete('cascade');
-            $table->enum('attendance_status', ['present', 'absent', 'late'])->default('absent');
-            $table->date('date')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendances');
+        Schema::dropIfExists('semester_subject');
     }
 };

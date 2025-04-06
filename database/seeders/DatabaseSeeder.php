@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             courseCategorySeeder::class
         ]);
     }
-    
+
 
     /**
      * Seed the roles in the database.

@@ -21,7 +21,7 @@ class Semester extends Model
     }
     public function students()
     {
-        return $this->belongsToMany(Student::class, 'student_semester', 'semester_id', 'student_id');
+        return $this->belongsToMany(Student::class, 'student_semester', 'semester_id', 'student_id')->withTimestamps();;
     }
     public function attendances()
     {
@@ -29,7 +29,7 @@ class Semester extends Model
     }
       public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'semester_subject', 'semester_id', 'subject_id');
+        return $this->belongsToMany(Subject::class, 'semester_subject', 'semester_id', 'subject_id')->withTimestamps();
     }
-    
+
 }

@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('semester_subject', function (Blueprint $table) {
-            $table->id();
-            $table->foreignUuid('semester_id')->constrained('semesters')->onDelete('cascade');
+        Schema::create('student_subject', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignUuid('subject_id')->constrained('subjects')->onDelete('cascade');
+
+    // Ensure a student cannot enroll in the same subject more than once
+    $table->unique(['student_id', 'subject_id']);
             $table->timestamps();
 
-
-             // Ensure that a student cannot enroll in the same semester more than once
-        $table->unique(['semester_id', 'subject_id']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('semester_subject');
+        Schema::dropIfExists('student_subject');
     }
 };

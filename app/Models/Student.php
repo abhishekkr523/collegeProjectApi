@@ -44,11 +44,27 @@ class Student extends Model
 
     public function semesters()
     {
-        return $this->belongsToMany(Semester::class, 'student_semester', 'student_id', 'semester_id');
+        return $this->belongsToMany(Semester::class, 'student_semester', 'student_id', 'semester_id') ->withTimestamps();
     }
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
     }
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'student_subject', 'student_id','subject_id');
+    }
+    // Automatically assign all 8 semesters to a newly created student
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::created(function ($student) {
+            // Fetch all semester IDs
+            $semesterIds = Semester::pluck('id')->toArray();
+
+            // Attach all semesters to the student
+            $student->semesters()->attach($semesterIds);
+        });
+    }
 }
