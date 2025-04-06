@@ -41,7 +41,6 @@ class Book extends Model
         'student_id'      // Foreign key in the pivot table referring to the related model
     )->withTimestamps();
 }
-
     // Define relationships (if any, for example, a Book can belong to a Library or Category)
 
     // For example, if you want to add a relationship to a `Category` model

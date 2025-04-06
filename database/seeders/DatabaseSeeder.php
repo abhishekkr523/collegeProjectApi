@@ -39,7 +39,6 @@ class DatabaseSeeder extends Seeder
         \App\Models\Role::create(['name' => 'HOD']);
         \App\Models\Role::create(['name' => 'Librarian']);
         \App\Models\Role::create(['name' => 'User']);
-        $this->call(YearAndSemesterSeeder::class);
 
     }
 

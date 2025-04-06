@@ -4,10 +4,15 @@ namespace App\Models\Admin;
 
 use App\Models\Book;
 use App\Models\Student;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 class IssueBook extends Model
 {
+    use HasFactory;
+    use HasUuids;
+    protected $keyType = 'string';
     protected $fillable = [
         'id',
         'book_id',
@@ -15,6 +20,7 @@ class IssueBook extends Model
         'issue_date',
         'return_date',
         'fine',
+        'status',
     ];
 
     public function book()
@@ -24,16 +30,5 @@ class IssueBook extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
-    }
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            // If the id isn't already set, generate a UUID
-            if (empty($model->{$model->getKeyName()})) {
-                $model->{$model->getKeyName()} = (string) Str::uuid();
-            }
-        });
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->date('issue_date');
             $table->date('return_date');
+            $table->enum('status', ['pending', 'returned'])->default('pending');
             $table->string('fine');
             $table->timestamps();
         });

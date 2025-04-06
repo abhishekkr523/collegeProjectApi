@@ -21,12 +21,10 @@ class CreateBooksTable extends Migration
         });
     }
 
-/*************  ✨ Codeium Command ⭐  *************/
     /**
      * Reverse the migrations by dropping the 'books' table.
      */
 
-/******  3ace8d40-fa7d-4368-ad4a-9544f3f709e7  *******/
     public function down()
     {
         Schema::dropIfExists('books');
