@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('roll_no')->unique();
+            $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('branch');
             $table->string('session');

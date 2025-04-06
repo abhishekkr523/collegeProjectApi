@@ -65,3 +65,6 @@ class YearController extends Controller
         //
     }
 }
+class CalculateYear extends YearController{
+    
+}

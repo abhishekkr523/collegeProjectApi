@@ -1,6 +1,8 @@
 <?php
 
 use App\Exports\BooksExport;
+use App\Http\Controllers\Admin\IssueBookController;
+use App\Http\Controllers\Admin\SendMailController;
 use Illuminate\Http\Request;
 
 use App\Models\CourseCategory;
@@ -45,16 +47,18 @@ Route::middleware(['auth:sanctum', 'role:Librarian'])->group(function () {});
 
 Route::middleware(['auth:sanctum', 'role:User'])->group(function () {});
 
-
-Route::get('books', [BookController::class, 'index']);
-Route::get('books/{id}', [BookController::class, 'show']);
-Route::post('books', [BookController::class, 'store']);
-Route::put('books/{id}', [BookController::class, 'update']);
-Route::delete('books/{id}', [BookController::class, 'destroy']);
-Route::get('/export-books', function () {
-    return Excel::download(new BooksExport, 'books.xlsx');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('books', [BookController::class, 'index']);
+    Route::get('books/{id}', [BookController::class, 'show']);
+    Route::post('books', [BookController::class, 'store']);
+    Route::put('books/{id}', [BookController::class, 'update']);
+    Route::delete('books/{id}', [BookController::class, 'destroy']);
+    Route::get('/export-books', function () {
+        return Excel::download(new BooksExport, 'books.xlsx');
+    });
+    Route::post('/books/import', [BookController::class, 'import']);
+    
 });
-Route::post('/books/import', [BookController::class, 'import']);
 
 Route::get('users', [UserController::class, 'index']);
 Route::post('users', [UserController::class, 'store']); // Add new user
@@ -108,6 +112,18 @@ Route::get('/download/{filename}', function ($filename) {
     return Response::download($path);
 });
 Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
+
+Route::prefix('issue-book')->group(function () {
+    Route::get('/', [IssueBookController::class, 'index']);
+    Route::post('/', [IssueBookController::class, 'addingBookIssue']);
+    Route::get('/{id}', [IssueBookController::class, 'show']);
+    Route::post('/{id}', [IssueBookController::class, 'update']);
+    Route::delete('/{id}', [IssueBookController::class, 'destroy']);
+});
+Route::get('/check-status', [IssueBookController::class, 'checkAddingStatus']);
+Route::get('/check-student', [IssueBookController::class, 'findStudent']);
+
+Route::post('/send-email', [SendMailController::class, 'sendEmail']);
 
 Route::apiResource('attendances', AttendanceController::class);
 
