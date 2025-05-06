@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 
+
 class BookController extends Controller
 {
     // Get all books (index)
     public function index(Request $request)
     {
         $query = Book::query(); // Start the query builder
-    
+
         if ($request->has('search1')) {
             $query->where('title', 'LIKE', "%{$request->input('search1')}%");
         }
@@ -27,7 +28,7 @@ class BookController extends Controller
             $query->where('isbn', 'LIKE', "%{$request->input('search3')}%");
         }
     
-        $books = $query->get(); // Execute the query
+        $books = $query->paginate(10); // Execute the query
     
         if ($books->isEmpty()) {
             return response()->json([

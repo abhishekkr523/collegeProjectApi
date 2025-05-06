@@ -65,6 +65,7 @@ class StudentSeeder extends Seeder
                 'name' => $faker->name,
                 'roll_no' => 'CS' . str_pad($i, 3, '0', STR_PAD_LEFT), // Example: CS001, CS002...
                 'phone' => $faker->unique()->numerify('98########'),
+                'email'=> $faker->unique()->email,
                 'branch' => $faker->randomElement($branches),
                 'session' => $faker->randomElement($sessions),
             ]);
