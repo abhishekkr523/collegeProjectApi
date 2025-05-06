@@ -12,9 +12,22 @@ use Illuminate\Support\Facades\Response;
 
 class NoticeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Notice::all());
+        $search = $request->input('search');
+
+        $notices = Notice::when($search, function ($query, $search) {
+                return $query->where('title', 'LIKE', "%{$search}%")
+                ->orWhere('description', 'LIKE', "%{$search}%")->orWhere('author', 'LIKE', "%{$search}%")->orWhere('category', 'LIKE', "%{$search}%");
+            })->get();
+        if ($notices->isEmpty()) {
+            return response()->json([
+                'message' => 'No matching notice found.',
+                'status' => false
+            ], 200);
+        }
+        // Return users as JSON (for API) or view (for web routes)
+        return response()->json($notices);
     }
 
 //     public function store(Request $request)
@@ -84,6 +97,35 @@ public function store(Request $request)
     $notice->save();
 
     return response()->json(['message' => 'Notice created successfully', 'data' => $notice], 201);
+}
+
+public function update(Request $request, Notice $notice)
+{
+    // Validate the request
+    $data = $request->validate([
+        'title' => 'nullable|string',
+        'description' => 'nullable|string',
+        'category' => 'nullable|string',
+        'author' => 'nullable|string',
+        'notice_date' => 'nullable|date',
+        'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif,svg,zip,rar,txt,csv|max:20480',
+    ]);
+
+    // Check if file is present and save it like in store()
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('notices', $fileName, 'public'); // Save in storage/app/public/notices
+        $data['file'] = $filePath; // Save full path in DB
+    }
+
+    // Update the notice
+    $notice->update($data);
+
+    return response()->json([
+        'message' => 'Notice updated successfully',
+        'notice' => $notice
+    ]);
 }
 
 

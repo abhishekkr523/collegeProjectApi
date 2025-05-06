@@ -83,6 +83,8 @@ Route::get('/notices', [NoticeController::class, 'index']);
 Route::post('/notices', [NoticeController::class, 'store']);
 Route::get('/notices/{id}/download', [NoticeController::class, 'download']);
 Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+Route::post('/notices/{notice}', [NoticeController::class, 'update']);
+
 
 Route::get('role', [RoleController::class, 'index']);
 Route::get('year', [YearController::class, 'index']);
