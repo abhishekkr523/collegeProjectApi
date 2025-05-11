@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Notifications\SendMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendIssueEmail;
 
 trait EmailNotificationTrait
 {
@@ -22,8 +23,8 @@ trait EmailNotificationTrait
         // Use provided custom text or a default message
         $message = $customText ?? 'This is a default message';
 
-        // Send the notification
-        Mail::to($student->email)->send(new IssueMail($student->name, $bookName, $issueDate, $returnDate, $fine, $message,$subject));
+        // Dispatch the email job to the queue
+        SendIssueEmail::dispatch($student, $message,$subject);
 
         return response()->json(['message' => 'Email notification sent successfully!']);
     }
