@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('roll_no')->unique();
             $table->string('email')->unique();
+            $table->string('parent_email')->unique();
             $table->string('phone')->unique();
+            $table->string('parent_phone')->unique();
             $table->string('branch');
             $table->string('session');
             $table->timestamps();
