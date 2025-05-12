@@ -27,13 +27,14 @@ class IssueMail extends Mailable
 
     public function build()
     {
-        return $this->subject("{$this->subject}");
-                    // ->html("
-                    //     <h3>Notification</h3>
-                    //     <p>{$this->issue}</p>
-                    //     <p>Regards</p>
-                    //     <p>GECJ</p>
-                    // ");
+        return $this->subject("{$this->subject}")
+                    ->html("
+                        <h3>Notification</h3>
+                        <p>{$this->issue}</p>
+                        <p>Regards</p>
+                        <p>{$this->sender}</p>
+                        <p>GECJ</p>
+                    ");
     }
 
     /**
