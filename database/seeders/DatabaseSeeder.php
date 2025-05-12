@@ -24,7 +24,10 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
             NoticeSeeder::class,
             BookSeeder::class,
-            courseCategorySeeder::class
+            courseCategorySeeder::class,
+            StudentAttendanceSeeder::class,
+            IssuedBookSeeder::class,
+
         ]);
     }
 

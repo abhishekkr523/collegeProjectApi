@@ -18,22 +18,22 @@ class IssueMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($subject, $issue,$sender)
+    public function __construct($sender, $issue,$subject)
     {
+        $this->sender=$sender;
         $this->issue = $issue;
         $this->subject=$subject;
-        $this->sender=$sender;
     }
 
     public function build()
     {
-        return $this->subject("{$this->subject}")
-                    ->html("
-                        <h3>Notification</h3>
-                        <p>{$this->issue}</p>
-                        <p>Regards</p>
-                        <p>GECJ</p>
-                    ");
+        return $this->subject("{$this->subject}");
+                    // ->html("
+                    //     <h3>Notification</h3>
+                    //     <p>{$this->issue}</p>
+                    //     <p>Regards</p>
+                    //     <p>GECJ</p>
+                    // ");
     }
 
     /**
