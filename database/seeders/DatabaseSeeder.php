@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 
         // Call all seeders here
         $this->call([
+            UserSeeder::class,
             SemesterSeeder::class,
             StudentSeeder::class,
             SubjectSeeder::class,
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
             NoticeSeeder::class,
             BookSeeder::class,
             courseCategorySeeder::class,
+            roleuserSeeder::class,
             StudentAttendanceSeeder::class,
             IssuedBookSeeder::class,
 
@@ -38,8 +40,8 @@ class DatabaseSeeder extends Seeder
     public function seedRoles()
     {
         \App\Models\Role::create(['name' => 'Admin']);
-        \App\Models\Role::create(['name' => 'Teacher']);
         \App\Models\Role::create(['name' => 'HOD']);
+        \App\Models\Role::create(['name' => 'Teacher']);
         \App\Models\Role::create(['name' => 'Librarian']);
         \App\Models\Role::create(['name' => 'User']);
 

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('subject_id')->constrained('subjects')->onDelete('cascade');
             $table->enum('attendance_status', ['present', 'absent', 'late'])->default('absent');
             $table->date('date')->nullable();
+            $table->uuid('taken_by')->nullable();
             $table->timestamps();
         });
     }
