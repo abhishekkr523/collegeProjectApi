@@ -30,35 +30,50 @@ use App\Http\Controllers\GetDashboardDataController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->put('/profile', [AuthController::class, 'updateProfile']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // Admin routes
-Route::middleware(['auth:sanctum', 'role:Admin'])->group(function () {
-    // Route::post('/assign-role', [AuthController::class, 'assignRole']);
+Route::middleware(['auth:sanctum', 'role:Admin,HOD'])->group(function () {
+    Route::post('/assign-role', [AuthController::class, 'assignRole']);
 });
 
 // HOD routes (accessible by hod and librarian)
-Route::middleware(['auth:sanctum', 'role:HOD'])->group(function () {});
+Route::middleware(['auth:sanctum', 'role:HOD'])->group(function () {
+    // Route::post('/assign-role', [AuthController::class, 'assignRole']);
+});
 
 // Teacher routes (accessible by teacher and librarian)
-Route::middleware(['auth:sanctum', 'role:Teacher'])->group(function () {});
+Route::middleware(['auth:sanctum', 'role:Admin,HOD, Teacher,Librarian'])->group(function () {
+    Route::post('/notices/{notice}', [NoticeController::class, 'update']);
+    Route::post('/notices', [NoticeController::class, 'store']);
+Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+});
 
 // Librarian routes
-Route::middleware(['auth:sanctum', 'role:Librarian'])->group(function () {});
+Route::middleware(['auth:sanctum', 'role:Librarian,Admin'])->group(function () {
+    Route::post('books', [BookController::class, 'store']);
+    Route::put('books/{id}', [BookController::class, 'update']);
+    Route::delete('books/{id}', [BookController::class, 'destroy']);
+
+    Route::post('issue-book/', [IssueBookController::class, 'addingBookIssue']);
+    Route::post('issue-book/{id}', [IssueBookController::class, 'update']);
+    Route::delete('issue-book/{id}', [IssueBookController::class, 'destroy']);
+});
 
 Route::middleware(['auth:sanctum', 'role:User'])->group(function () {});
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('books', [BookController::class, 'index']);
     Route::get('books/{id}', [BookController::class, 'show']);
-    Route::post('books', [BookController::class, 'store']);
-    Route::put('books/{id}', [BookController::class, 'update']);
-    Route::delete('books/{id}', [BookController::class, 'destroy']);
+    // Route::post('books', [BookController::class, 'store']);
+    // Route::put('books/{id}', [BookController::class, 'update']);
+    // Route::delete('books/{id}', [BookController::class, 'destroy']);
     Route::get('/export-books', function () {
         return Excel::download(new BooksExport, 'books.xlsx');
     });
     Route::post('/books/import', [BookController::class, 'import']);
-    
+
 });
 
 Route::get('users', [UserController::class, 'index']);
@@ -71,6 +86,8 @@ Route::get('student', [StudentController::class, 'index']);
 Route::post('student', [StudentController::class, 'store']);
 Route::post('student/{id}', [StudentController::class, 'update']);
 Route::delete('student/{id}', [StudentController::class, 'destroy']);
+Route::get('/export-students', [StudentController::class, 'export']);
+Route::post('/import-students', [StudentController::class, 'import']);
 Route::get('roles/{roleId}/users', [UserController::class, 'getUsersByRole']);
 
 Route::get('marks', [MarksController::class, 'index']);
@@ -81,13 +98,15 @@ Route::post('marks/{id}', [MarksController::class, 'update']);
 Route::post('marks/import', [MarksController::class, 'import'])->name('import');
 Route::delete('marks/{id}', [MarksController::class, 'destroy']);
 // Assign role to user
-Route::post('/assign-role', [AuthController::class, 'assignRole']);
+// Route::post('/assign-role', [AuthController::class, 'assignRole']);
 
 
 Route::get('/notices', [NoticeController::class, 'index']);
-Route::post('/notices', [NoticeController::class, 'store']);
+// Route::post('/notices', [NoticeController::class, 'store']);
 Route::get('/notices/{id}/download', [NoticeController::class, 'download']);
-Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+// Route::delete('/notices/{id}', [NoticeController::class, 'deleteNotice']);
+// Route::post('/notices/{notice}', [NoticeController::class, 'update']);
+
 
 Route::get('role', [RoleController::class, 'index']);
 Route::get('year', [YearController::class, 'index']);
@@ -116,10 +135,10 @@ Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
 
 Route::prefix('issue-book')->group(function () {
     Route::get('/', [IssueBookController::class, 'index']);
-    Route::post('/', [IssueBookController::class, 'addingBookIssue']);
+    // Route::post('/', [IssueBookController::class, 'addingBookIssue']);
     Route::get('/{id}', [IssueBookController::class, 'show']);
-    Route::post('/{id}', [IssueBookController::class, 'update']);
-    Route::delete('/{id}', [IssueBookController::class, 'destroy']);
+    // Route::post('/{id}', [IssueBookController::class, 'update']);
+    // Route::delete('/{id}', [IssueBookController::class, 'destroy']);
 });
 Route::get('/check-status', [IssueBookController::class, 'checkAddingStatus']);
 Route::get('/check-student', [IssueBookController::class, 'findStudent']);
@@ -129,7 +148,11 @@ Route::get('/dashboard', [GetDashboardDataController::class, 'getMonthlyPieChart
 Route::get('/dashboard/bar-chart-data', [GetDashboardDataController::class, 'getBarChartData']);
 
 
-Route::apiResource('attendances', AttendanceController::class);
+// Route::apiResource('attendances', AttendanceController::class);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResource('attendances', AttendanceController::class);
+});
+
 
 Route::prefix('subjects')->group(function () {
     Route::get('/', [SubjectController::class, 'index']);        // Get all subjects

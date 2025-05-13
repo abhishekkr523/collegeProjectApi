@@ -12,7 +12,7 @@ class Attendance extends Model
     use HasFactory;
     use HasFactory, HasUuids;
 
-    protected $fillable = ['student_id', 'semester_id', 'subject_id', 'attendance_status', 'date'];
+    protected $fillable = ['student_id', 'semester_id', 'subject_id', 'attendance_status', 'date', 'taken_by'];
 
 
     public function student()
