@@ -19,6 +19,7 @@ class Student extends Model
         'phone',
         'branch',
         'session',
+        'email',
     ];
     public function routeNotificationForMail($notification)
     {

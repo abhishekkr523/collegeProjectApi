@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Student; // Assuming you have a `Student` model
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Exports\StudentsExport;
+use App\Imports\StudentsImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Student; // Assuming you have a `Student` model
 
 class StudentController extends Controller
 {
@@ -84,7 +87,6 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-
         $student = Student::create([
             'id' => Str::uuid(),
             'name' => $request->name,
@@ -92,12 +94,13 @@ class StudentController extends Controller
             'phone' => $request->phone,
             'branch' => $request->branch,
             'session' => $request->session,
+            'email' => $request->email,
         ]);
 
         // Create a new student
         // $student = Student::create($request->all());
 
-        return response()->json(['message' => 'Student created successfully', 'student' => $student], 200);
+        return response()->json(['message' => 'Student createdd successfully', 'student' => $student], 200);
     }
 
     /**
@@ -128,6 +131,7 @@ class StudentController extends Controller
             'phone' => 'required|string|max:15',
             'branch' => 'required|string|max:100',
             'session' => 'required|string|max:50',
+            'email' => 'required|string|email|max:255|unique:students,email,' . $id,
         ]);
         if (!$student) {
             return response()->json(['message' => 'Student not found'], 404);
@@ -152,5 +156,19 @@ class StudentController extends Controller
         $student->delete();
 
         return response()->json(['message' => 'Student deleted successfully'], 200);
+    }
+    public function export()
+    {
+        return Excel::download(new StudentsExport, 'students.xlsx');
+    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new StudentsImport, $request->file('file'));
+
+        return response()->json(['message' => 'Students imported successfully']);
     }
 }

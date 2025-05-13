@@ -37,8 +37,8 @@ class DatabaseSeeder extends Seeder
     public function seedRoles()
     {
         \App\Models\Role::create(['name' => 'Admin']);
-        \App\Models\Role::create(['name' => 'Teacher']);
         \App\Models\Role::create(['name' => 'HOD']);
+        \App\Models\Role::create(['name' => 'Teacher']);
         \App\Models\Role::create(['name' => 'Librarian']);
         \App\Models\Role::create(['name' => 'User']);
 

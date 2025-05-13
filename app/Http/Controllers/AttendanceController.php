@@ -66,6 +66,7 @@ class AttendanceController extends Controller
         // ]);
 
         // Convert date format from `d/m/Y` (12/12/2023) to `Y-m-d` (2023-12-12)
+        $userId = auth()->user()->id;
         $dateString = trim($request->date); // Remove whitespace
         $formattedDate = Carbon::createFromFormat('d/m/Y', $dateString)->format('Y-m-d');
 
@@ -79,21 +80,6 @@ class AttendanceController extends Controller
         }
 
 
-
-        // // Prevent duplicate attendance entries for the same student, subject, and date
-        // $existingAttendance = Attendance::where([
-        //     // 'student_id' => $request->student_id,
-        //     // 'semester_id' => $request->semester_id,
-        //     // 'subject_id' => $request->subject_id,
-        //     'date' => $formattedDate,
-        // ])->exists();
-
-        // if ($existingAttendance) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Attendance for this student, subject, and date already exists.',
-        //     ], 409); // HTTP 409 Conflict
-        // }
         // Check if attendance already exists for this student, semester, subject and date
         $existingAttendance = Attendance::where('student_id', $request->student_id)
             ->where('semester_id', $request->semester_id)
@@ -114,6 +100,7 @@ class AttendanceController extends Controller
             'subject_id' => $request->subject_id,
             'attendance_status' => $request->attendance_status,
             'date' => $formattedDate, // Store in correct format
+            'taken_by' => $userId
         ]);
 
         return response()->json([
