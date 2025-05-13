@@ -26,7 +26,10 @@ class DatabaseSeeder extends Seeder
             NoticeSeeder::class,
             BookSeeder::class,
             courseCategorySeeder::class,
-            roleuserSeeder::class
+            roleuserSeeder::class,
+            StudentAttendanceSeeder::class,
+            IssuedBookSeeder::class,
+
         ]);
     }
 

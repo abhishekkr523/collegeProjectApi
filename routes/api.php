@@ -25,6 +25,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\GetDashboardDataController;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -143,6 +144,9 @@ Route::get('/check-status', [IssueBookController::class, 'checkAddingStatus']);
 Route::get('/check-student', [IssueBookController::class, 'findStudent']);
 
 Route::post('/send-email', [SendMailController::class, 'sendEmail']);
+Route::get('/dashboard', [GetDashboardDataController::class, 'getMonthlyPieChartPresentData']);
+Route::get('/dashboard/bar-chart-data', [GetDashboardDataController::class, 'getBarChartData']);
+
 
 // Route::apiResource('attendances', AttendanceController::class);
 Route::middleware(['auth:sanctum'])->group(function () {

@@ -12,32 +12,28 @@ use Illuminate\Queue\SerializesModels;
 class IssueMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $studentName;
     public $subject;
     public $issue;
     public $sender;
     /**
      * Create a new message instance.
      */
-    public function __construct($studentName, $subject, $issue,$sender)
+    public function __construct($sender, $issue,$subject)
     {
-        $this->studentName=$studentName;
+        $this->sender=$sender;
         $this->issue = $issue;
         $this->subject=$subject;
-        $this->sender=$sender;
     }
 
     public function build()
     {
-        return $this->subject("{$this->subject}")
-                    ->html("
-                        <h3>Notification</h3>
-                        <p>Dear {$this->studentName},</p>
-                        <p>{$this->issue}</p>
-                        <p>Regards,</p>
-                        <p>Your {$this->sender}</p>
-                        <p>GECJ</p>
-                    ");
+        return $this->subject("{$this->subject}");
+                    // ->html("
+                    //     <h3>Notification</h3>
+                    //     <p>{$this->issue}</p>
+                    //     <p>Regards</p>
+                    //     <p>GECJ</p>
+                    // ");
     }
 
     /**
