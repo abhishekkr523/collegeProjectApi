@@ -6,6 +6,7 @@ use App\Models\Student;
 use App\Models\Semester;
 use App\Models\Attendance;
 use App\Models\StudentSubject;
+use App\Models\Subject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -165,4 +166,87 @@ class AttendanceController extends Controller
 
         return response()->json(['message' => 'Attendance deleted successfully'], 200);
     }
+    // public function getAttendanceBySemesterAndSubject(Request $request): array
+    // {
+    //     $email = $request->query('email'); // or $request->email if you're using POST/Body
+
+    //     // Find student by email
+    //     $student = Student::where('email', $email)->first();
+
+    //     $studentId = $student->id;
+
+    //     // Get all attendances for the student
+    //     $attendances = Attendance::with(['semester', 'subject'])
+    //         ->where('student_id', $studentId)
+    //         ->orderBy('date')
+    //         ->get();
+
+    //     $grouped = [];
+
+    //     foreach ($attendances as $attendance) {
+    //         $semesterName = $attendance->semester->name; // assuming 'name' exists
+    //         $subjectName = $attendance->subject->name;   // assuming 'name' exists
+
+    //         // Initialize arrays if not already
+    //         if (!isset($grouped[$semesterName])) {
+    //             $grouped[$semesterName] = [];
+    //         }
+    //         if (!isset($grouped[$semesterName][$subjectName])) {
+    //             $grouped[$semesterName][$subjectName] = [];
+    //         }
+
+    //         $grouped[$semesterName][$subjectName][] = [
+    //             $attendance->date,
+    //             $attendance->attendance_status
+    //         ];
+    //     }
+
+    //     return $grouped;
+    // }
+    public function getAttendanceBySemesterAndSubject($email)
+{
+    if (!$email) {
+        return response()->json([
+            'message' => 'Email is required'
+        ], 400);
+    }
+
+    $student = Student::where('email', $email)->first();
+
+    if (!$student) {
+        return response()->json([
+            'message' => 'Student not found'
+        ], 404);
+    }
+
+    $studentId = $student->id;
+
+    // Get all attendances for the student
+    $attendances = Attendance::with(['semester', 'subject'])
+        ->where('student_id', $studentId)
+        ->orderBy('date')
+        ->get();
+
+    $grouped = [];
+
+    foreach ($attendances as $attendance) {
+        $semesterName = Semester::find($attendance->semester_id)->semester_name ?? 'Unknown Semester';
+        $subjectName = Subject::find($attendance->subject_id)->name ?? 'Unknown Subject';
+
+        // Initialize arrays if not already
+        if (!isset($grouped[$semesterName])) {
+            $grouped[$semesterName] = [];
+        }
+        if (!isset($grouped[$semesterName][$subjectName])) {
+            $grouped[$semesterName][$subjectName] = [];
+        }
+
+        $grouped[$semesterName][$subjectName][] = [
+            'date' => $attendance->date,
+            'status' => $attendance->attendance_status
+        ];
+    }
+
+    return response()->json($grouped);
+}
 }

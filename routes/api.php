@@ -56,9 +56,9 @@ Route::middleware(['auth:sanctum', 'role:Librarian,Admin'])->group(function () {
     Route::put('books/{id}', [BookController::class, 'update']);
     Route::delete('books/{id}', [BookController::class, 'destroy']);
 
-    Route::post('issue-book/', [IssueBookController::class, 'addingBookIssue']);
-    Route::post('issue-book/{id}', [IssueBookController::class, 'update']);
-    Route::delete('issue-book/{id}', [IssueBookController::class, 'destroy']);
+    // Route::post('issue-book/', [IssueBookController::class, 'addingBookIssue']);
+    // Route::post('issue-book/{id}', [IssueBookController::class, 'update']);
+    // Route::delete('issue-book/{id}', [IssueBookController::class, 'destroy']);
 });
 
 Route::middleware(['auth:sanctum', 'role:User'])->group(function () {});
@@ -133,10 +133,10 @@ Route::get('/export-notices', [NoticeController::class, 'exportNotices']);
 
 Route::prefix('issue-book')->group(function () {
     Route::get('/', [IssueBookController::class, 'index']);
-    // Route::post('/', [IssueBookController::class, 'addingBookIssue']);
+    Route::post('/', [IssueBookController::class, 'addingBookIssue']);
     Route::get('/{id}', [IssueBookController::class, 'show']);
-    // Route::post('/{id}', [IssueBookController::class, 'update']);
-    // Route::delete('/{id}', [IssueBookController::class, 'destroy']);
+    Route::post('/{id}', [IssueBookController::class, 'update']);
+    Route::delete('/{id}', [IssueBookController::class, 'destroy']);
 });
 Route::get('/check-status', [IssueBookController::class, 'checkAddingStatus']);
 Route::get('/check-student', [IssueBookController::class, 'findStudent']);
@@ -149,7 +149,9 @@ Route::get('/dashboard/bar-chart-data', [GetDashboardDataController::class, 'get
 // Route::apiResource('attendances', AttendanceController::class);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('attendances', AttendanceController::class);
+    // Route::get('/getAttendanceBySemesterAndSubject', [AttendanceController::class, 'getAttendanceBySemesterAndSubject']);
 });
+Route::get('/getAttendanceBySemesterAndSubject/{studentId}', [AttendanceController::class, 'getAttendanceBySemesterAndSubject']);
 
 
 Route::prefix('subjects')->group(function () {

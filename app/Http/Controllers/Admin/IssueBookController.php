@@ -150,7 +150,7 @@ class IssueBookController extends Controller
         $issueBook=IssueBook::create($validatedData);
         if($issueBook){
             $text='Book has been successfully issued.';
-            $this->sendEmail($issueBook->student_id,$book->title,$issueBook->issue_date,$issueBook->return_date,$issueBook->fine,$text);
+
         }
         return response()->json([
             'message' => 'Book has been successfully issued.',
@@ -167,7 +167,7 @@ class IssueBookController extends Controller
 
         return response()->json($issueBook, 200);
     }
-    
+
     public function update(Request $request, string $id)
     {
         $validated = $request->validate([
