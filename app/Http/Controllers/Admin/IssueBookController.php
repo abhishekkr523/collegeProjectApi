@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\IssueBook;
 use App\Models\Book;
 use App\Models\Student;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -117,39 +118,6 @@ class IssueBookController extends Controller
 
         return response()->json(['message' => ''], 200);
     }
-    // public function addingBookIssue(Request $request)
-    // {
-    //     // $validated = $request->validate([
-    //     //     'fine'        => 'required',
-    //     //     'status'      => 'required'
-    //     // ]);
-
-    //     $issue_date = Carbon::parse($request->issue_date)->format('Y-m-d H:i:s');
-    //     $return_date = Carbon::parse($request->return_date)->format('Y-m-d H:i:s');
-    //     $student = Student::where('roll_no', $request->roll_number)->firstOrFail();
-    //     $book = Book::where('isbn', $request->book_isbn)->firstOrFail();
-    //     if ($book) {
-    //         if ($request->status == 'pending') {
-    //             $book->status = 'reserved';
-    //         }
-    //         if ($request->status == 'returned') {
-    //             $book->status = 'available';
-    //         }
-    //         $book->save();
-    //     }
-    //     $updateData = [
-    //         'student_id'  => $student->id,
-    //         'book_id'     => $book->id,
-    //         'issue_date'  => $issue_date,
-    //         'return_date' => $return_date,
-    //         'fine'        => $request->fine,
-    //         'status'      => $request->status
-    //     ];
-
-    //     $issueBook=IssueBook::create($updateData);
-
-    //     return response()->json(['success' => true, 'message' => 'Issue book successfully Created', 'data' => $issueBook], 201);
-    // }
     public function addingBookIssue(Request $request)
     {
         // dd($request->all());
@@ -237,6 +205,11 @@ class IssueBookController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Issue book successfully updated', 'data' => $issueBook], 200);
     }
+    public function getBookIssueOfStudent(){
+
+
+    }
+    
 
     public function destroy(string $id)
     {

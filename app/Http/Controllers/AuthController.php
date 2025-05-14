@@ -12,41 +12,6 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
 
-    // public function register(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|string|email|max:255|unique:users',
-    //         'password' => 'required|string|min:8',
-    //     ]);
-
-    //     // Check if this is the first user
-    //     $isFirstUser = User::count() === 0;
-
-    //     // Create the user
-    //     $user = User::create([
-    //         'id' => \Illuminate\Support\Str::uuid(),
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     // Assign roles
-    //     if ($isFirstUser) {
-    //         // Assign admin role to the first user
-    //         $adminRole = Role::where('name', 'admin')->firstOrFail();
-    //         $user->roles()->attach($adminRole->id);
-    //     } else {
-    //         // Assign default user role
-    //         $defaultRole = Role::where('name', 'user')->firstOrFail();
-    //         $user->roles()->attach($defaultRole->id);
-    //     }
-
-    //     return response()->json([
-    //         'message' => $isFirstUser ? 'Admin registered successfully.' : 'User registered successfully.',
-    //         'user' => $user,
-    //     ]);
-    // }
     public function register(Request $request)
 {
     $request->validate([

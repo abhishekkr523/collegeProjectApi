@@ -50,5 +50,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user');
     }
+public function student()
+{
+    return $this->hasOneThrough(Student::class, UserStudent::class, 'user_id', 'id', 'id', 'student_id');
+}
+
+
 
 }

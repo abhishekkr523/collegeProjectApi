@@ -68,4 +68,9 @@ class Student extends Model
             $student->semesters()->attach($semesterIds);
         });
     }
+    public function user()
+{
+    return $this->hasOneThrough(User::class, UserStudent::class, 'student_id', 'id', 'id', 'user_id');
+}
+
 }

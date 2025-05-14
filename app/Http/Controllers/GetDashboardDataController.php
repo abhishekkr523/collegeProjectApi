@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\Admin\IssueBook;
@@ -77,22 +78,21 @@ class GetDashboardDataController extends Controller
             'remaining_books' => $remainingBooks,
         ]);
     }
-    public function getBarChartData(){
-$attendanceData = DB::table('attendances')
-        ->select(DB::raw('YEAR(date) as year'), DB::raw('COUNT(*) as total'))
-        ->groupBy(DB::raw('YEAR(date)'))
-        ->orderBy('year', 'asc')
-        ->get();
-$issueBookData = DB::table('issue_books')
-        ->select(DB::raw('YEAR(issue_date) as year'), DB::raw('COUNT(*) as total'))
-        ->groupBy(DB::raw('YEAR(issue_date)'))
-        ->orderBy('year', 'asc')
-        ->get();
-
-
-    return response()->json([
-        'attendanceData'=>$attendanceData,
-        'issueBookData'=>$issueBookData]);
+    public function getBarChartData()
+    {
+        $attendanceData = DB::table('attendances')
+            ->select(DB::raw('YEAR(date) as year'), DB::raw('COUNT(*) as total'))
+            ->groupBy(DB::raw('YEAR(date)'))
+            ->orderBy('year', 'asc')
+            ->get();
+        $issueBookData = DB::table('issue_books')
+            ->select(DB::raw('YEAR(issue_date) as year'), DB::raw('COUNT(*) as total'))
+            ->groupBy(DB::raw('YEAR(issue_date)'))
+            ->orderBy('year', 'asc')
+            ->get();
+        return response()->json([
+            'attendanceData' => $attendanceData,
+            'issueBookData' => $issueBookData
+        ]);
     }
-
 }

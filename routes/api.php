@@ -85,6 +85,7 @@ Route::get('/export-users', [UserController::class, 'export']);
 Route::get('student', [StudentController::class, 'index']);
 Route::post('student', [StudentController::class, 'store']);
 Route::post('student/{id}', [StudentController::class, 'update']);
+Route::get('/student/issue-book', [UserController::class, 'getStudentBookIssue']);
 Route::delete('student/{id}', [StudentController::class, 'destroy']);
 Route::get('/export-students', [StudentController::class, 'export']);
 Route::post('/import-students', [StudentController::class, 'import']);
@@ -97,9 +98,6 @@ Route::post('marks', [MarksController::class, 'store']);
 Route::post('marks/{id}', [MarksController::class, 'update']);
 Route::post('marks/import', [MarksController::class, 'import'])->name('import');
 Route::delete('marks/{id}', [MarksController::class, 'destroy']);
-// Assign role to user
-// Route::post('/assign-role', [AuthController::class, 'assignRole']);
-
 
 Route::get('/notices', [NoticeController::class, 'index']);
 // Route::post('/notices', [NoticeController::class, 'store']);

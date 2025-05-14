@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IssueBookResource;
+use App\Models\Admin\IssueBook;
+use App\Models\Book;
 use App\Models\Role;
+use App\Models\Student;
 use App\Models\User;
 use App\Exports\UsersExport;
 use Illuminate\Http\Request;
@@ -90,7 +94,24 @@ return "user dashboard";
 
         return response()->json($user);
     }
+    public function getStudentBookIssue(Request $request){
+        $request->validate([
+    'email' => 'required|email'
+]);
 
+        $student = Student::where('email', $request->email)->first();
+    if (!$student) {
+        return response()->json([
+            'message' => 'Student not found.'
+        ], 200);
+    }
+
+  $issueBooks = IssueBook::with('book')->where('student_id', $student->id)->get();
+
+    return response()->json([
+        'issueBooks' => IssueBookResource::collection($issueBooks),
+    ]);
+    }
     // Delete user
     public function destroy(User $user)
     {
